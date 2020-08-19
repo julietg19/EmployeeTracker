@@ -12,31 +12,160 @@ const render = require("./lib/htmlRenderer");
 const { doesNotReject } = require("assert");
 const { exit } = require("process");
 
-inquirer
-  .prompt({
-    message: "What kind of employee would you like to add?",
+let newEmployees = [];
+console.log(newEmployees);
 
-    type: "list",
-    name: "role",
-    choices: ["Manager", "Engineer", "Intern", "Done"],
-  })
-  .then((res) => {
-    console.log(res.role);
-    switch (res.role) {
-      case "Manager":
-        managerPrompt();
-        break;
-      case "Engineer":
-        engineerPrompt();
-        break;
-      case "Intern":
-        internPrompt();
-        break;
-      case "Done":
-        console.log("done!");
-        output();
-    }
+function start() {
+  inquirer
+    .prompt({
+      message: "What kind of employee would you like to add?",
+
+      type: "list",
+      name: "role",
+      choices: ["Manager", "Engineer", "Intern", "Done"],
+    })
+    .then((res) => {
+      console.log(res.role);
+      switch (res.role) {
+        case "Manager":
+          managerPrompt();
+          break;
+        case "Engineer":
+          engineerPrompt();
+          break;
+        case "Intern":
+          internPrompt();
+          break;
+        case "Done":
+          console.log("done!");
+          output();
+      }
+    });
+}
+
+start();
+
+function managerPrompt() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the name of the Employee you would like to add?",
+        name: "employeeName",
+      },
+      {
+        type: "input",
+        message: "What is the ID for the employee you would like to add?",
+        name: "employeeID",
+      },
+      {
+        type: "input",
+        message: "What is the email of the employee you would like to add?",
+        name: "employeeEmail",
+      },
+      {
+        type: "input",
+        message:
+          "What is the phone number for the employee you would like to add?",
+        name: "employeePhone",
+      },
+    ])
+    .then((res) => {
+      console.log(res);
+      newEmployees.push(
+        new Manager(
+          res.employeeName,
+          res.employeeID,
+          res.employeeEmail,
+          res.employeePhone
+        )
+      );
+      start();
+    });
+}
+
+function engineerPrompt() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the name of the Employee you would like to add?",
+        name: "employeeName",
+      },
+      {
+        type: "input",
+        message: "What is the ID for the employee you would like to add?",
+        name: "employeeID",
+      },
+      {
+        type: "input",
+        message: "What is the email of the employee you would like to add?",
+        name: "employeeEmail",
+      },
+      {
+        type: "input",
+        message:
+          "What is the github name for the employee you would like to add?",
+        name: "employeeGithub",
+      },
+    ])
+    .then((res) => {
+      console.log(res);
+      newEmployees.push(
+        new Engineer(
+          res.employeeName,
+          res.employeeID,
+          res.employeeEmail,
+          res.employeeGithub
+        )
+      );
+      start();
+    });
+}
+
+function internPrompt() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the name of the Employee you would like to add?",
+        name: "employeeName",
+      },
+      {
+        type: "input",
+        message: "What is the ID for the employee you would like to add?",
+        name: "employeeID",
+      },
+      {
+        type: "input",
+        message: "What is the email of the employee you would like to add?",
+        name: "employeeEmail",
+      },
+      {
+        type: "input",
+        message: "What school did this employee come from?",
+        name: "employeeSchool",
+      },
+    ])
+    .then((res) => {
+      console.log(res);
+      newEmployees.push(
+        new Intern(
+          res.employeeName,
+          res.employeeID,
+          res.employeeEmail,
+          res.employeeSchool
+        )
+      );
+      start();
+    });
+}
+
+function output() {
+  fs.writeFile("output/team.html", render(newEmployees), (err) => {
+    if (err) throw err;
   });
+}
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
